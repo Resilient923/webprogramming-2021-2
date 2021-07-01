@@ -1,0 +1,173 @@
+<link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&display=swap" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<h1 style="font-family: 'Do Hyeon', sans-serif; ">왼쪽 홈트도시락 7종을 장바구니에 담아 계산해보세요!</h1>
+<br>
+<select id="selFoods" name="selFoods" style="height:60px; width: 300px;">
+</select>
+<button id="btnAddFoods" style="height:60px;"><strong>장바구니에 추가</button>
+</br>
+</br>
+
+<div id="container">
+
+</div>
+
+</br>
+<strong>총 건강식품 요금합계</strong>:<input id="FoodsTotAmt" name="totAmt" value=0></br>
+<script>
+
+
+
+    function Foods(){
+
+        //json 배열으로 데이터 처리했음
+        this.arrAllFoods = new Array();//식품 목록
+        this.arrSelFoods = new Array();//선택한 식품 목록
+        
+        var p = this;
+        
+        //식품 추가 시
+        this.select = function (targetFoodsId){
+
+            var selectFoodIdx = -1;
+            
+            //전체 목록 배열에서 검색하여 FoodsId가 없다면 선택 목록에 push후 container안에 그려준다.
+            
+            //선택 목록에서 검색
+            for(var i=0;i<p.arrSelFoods.length;i++){
+
+                if(p.arrSelFoods[i].FoodsId==targetFoodsId){
+                    selectFoodIdx = i;
+                    break;
+                }
+            }
+            
+            if(selectFoodIdx<0){//선택목록에 없을 경우 추가. 잇을경우 얼럿.
+                //전체목록에서 선택 추가해줌.
+                for(var j=0;j<p.arrAllFoods.length;j++){
+
+                    if(p.arrAllFoods[j].FoodsId==targetFoodsId){
+                        p.arrSelFoods.push(p.arrAllFoods[j]);
+                        p.arrSelFoods[p.arrSelFoods.length-1].cnt = 0;//무조건 개수 초기화
+                        p.appendChoiceFood(p.arrAllFoods[j]);
+                        break;
+                    }
+                }
+            }else{
+                alert("이미 추가한 건강식품입니다.");
+            }
+            p.afterProc();
+        }
+        
+        //식품 제거 시
+        this.deselect = function (targetFoodsId){
+
+            var selectFoodIdx = -1;
+            
+            //배열에서 검색.
+            for(var i=0;i<p.arrSelFoods.length;i++){
+
+                if(p.arrSelFoods[i].FoodsId==targetFoodsId){
+                    p.removeChoiceFood(p.arrSelFoods[i]);
+                    p.arrSelFoods.splice(i,1);
+                    break;
+                }
+            }
+            p.afterProc();
+        }
+        
+        this.appendChoiceFood = function(foodObject){
+
+            var htmlOutput = "";
+            
+            htmlOutput += '<div id="div_'+foodObject.FoodsId+'">';          
+            htmlOutput += '<ul>';
+            htmlOutput += '  <li>'+foodObject.FoodsNm+'</li>';
+            htmlOutput += '  <li>'+foodObject.FoodsUnprc+'원</li>';
+            htmlOutput += '  <button type="button" id="" class="add" name="" onclick="Foods.minus(\''+foodObject.FoodsId+'\');">한개빼기-</button>';
+            htmlOutput += '  <li>개수:<input type="text" id="input_cnt_'+foodObject.FoodsId+'" name="" value="0"/>'
+            htmlOutput += '  <li>가격:<input type="text" id="input_sumAmt_'+foodObject.FoodsId+'" name="" value="0"/></li>'
+            htmlOutput += '  <button type="button" id="" class="remove" name="" onclick="Foods.add(\''+foodObject.FoodsId+'\');">한개추가하기+</button>';
+            htmlOutput += '  <li><button type="button" id="" class="remove" name="" onclick="Foods.deselect(\''+foodObject.FoodsId+'\');">해당제품전체삭제</button></li>';
+            htmlOutput += '</ul>';
+            htmlOutput += '</div>';      
+            $('#container').append(htmlOutput);
+            
+        }
+        
+        this.removeChoiceFood = function(foodObject){
+            $("#div_"+foodObject.FoodsId).remove();
+        }
+        
+        this.add = function (targetFoodsId){
+
+            for(var i=0;i<p.arrSelFoods.length;i++){
+
+                if(p.arrSelFoods[i].FoodsId==targetFoodsId){
+                    p.arrSelFoods[i].cnt++;
+                    break;
+                }
+            }
+            
+            
+            p.afterProc();          
+        }
+        
+        this.minus = function (targetFoodsId){
+
+            for(var i=0;i<p.arrSelFoods.length;i++){
+
+                if(p.arrSelFoods[i].FoodsId==targetFoodsId){
+                    if(p.arrSelFoods[i].cnt==0) break;
+                    p.arrSelFoods[i].cnt--;
+                    break;
+                }
+            }
+            
+            p.afterProc();          
+        }
+        
+        //계산 후처리.
+        this.afterProc = function (){
+
+            for(var i=0;i<p.arrSelFoods.length;i++){
+                $('#input_cnt_'+p.arrSelFoods[i].FoodsId).val(p.arrSelFoods[i].cnt);
+                $('#input_sumAmt_'+p.arrSelFoods[i].FoodsId).val(p.arrSelFoods[i].cnt*p.arrSelFoods[i].FoodsUnprc);
+            }
+            
+            var FoodsTotAmt = 0;
+            for(var i=0;i<p.arrSelFoods.length;i++){
+                FoodsTotAmt += p.arrSelFoods[i].cnt*p.arrSelFoods[i].FoodsUnprc;
+            }
+            $('#FoodsTotAmt').val(FoodsTotAmt);
+            
+        }
+
+    }
+
+    var Foods = new Foods();
+    
+    //jstl로 전체 식품 목록 미리 세팅
+    Foods.arrAllFoods.push({FoodsId:"1",FoodsUnprc:8000,FoodsNm:"단호박영양밥+불고기맛닭가슴살"  ,cnt:0});
+    Foods.arrAllFoods.push({FoodsId:"2",FoodsUnprc:9000,FoodsNm:"계란밥+닭가슴살스테이크"  ,cnt:0});
+    Foods.arrAllFoods.push({FoodsId:"3",FoodsUnprc:7500,FoodsNm:"시래기밥+참치오믈렛",cnt:0});
+    Foods.arrAllFoods.push({FoodsId:"4",FoodsUnprc:7000,FoodsNm:"퀴노아밥+떡갈비",cnt:0});
+    Foods.arrAllFoods.push({FoodsId:"5",FoodsUnprc:6000,FoodsNm:"현미야채볶음밥+닭가슴살소세지",cnt:0});
+    Foods.arrAllFoods.push({FoodsId:"6",FoodsUnprc:7000,FoodsNm:"곤드레밥+매콤닭가슴살볼",cnt:0});
+    Foods.arrAllFoods.push({FoodsId:"7",FoodsUnprc:7000,FoodsNm:"렌틸콩밥+두부스테이크",cnt:0});
+    
+    //미리데이터 넣어두기
+    $('#selFoods').append('<option id="" value="1">단호박영양밥+불고기맛닭가슴살:8000원</option>');
+    $('#selFoods').append('<option id="" value="2">계란밥+닭가슴살스테이크:9000원</option>');
+    $('#selFoods').append('<option id="" value="3">시래기밥+참치오믈렛:7500원</option>');
+    $('#selFoods').append('<option id="" value="4">퀴노아밥+떡갈비:7000원</option>');
+    $('#selFoods').append('<option id="" value="5">현미야채볶음밥+닭가슴살소세지:6000원</option>');
+    $('#selFoods').append('<option id="" value="6">곤드레밥+매콤닭가슴살볼:7000원</option>');
+    $('#selFoods').append('<option id="" value="7">렌틸콩밥+두부스테이크:7000원</option>');
+    
+    $('#btnAddFoods').on('click',function(){
+        Foods.select($('#selFoods option:selected').val());
+    });
+    
+</script>

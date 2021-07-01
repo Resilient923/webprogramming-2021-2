@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./CSS/index.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&display=swap" rel="stylesheet">
+<title>당신의 BMI를 계산해보세요!</title>
+<style type="text/css">
+body{
+    font-family: 'Do Hyeon', sans-serif;
+}
+body h3{
+    font-size: 25px
+}
+</style>
+<script type="text/javascript">
+    function computeBMI()
+    {
+        let height=Number(document.getElementById("height").value);
+        let heightunits=document.getElementById("heightunits").value;
+        let weight=Number(document.getElementById("weight").value);
+        let weightunits=document.getElementById("weightunits").value;
+
+
+        //m를 cm로 바꾸는 코드
+        if (heightunits=="cm") height/=100;
+        
+
+        //BMI 계산 코드
+        let BMI=weight/Math.pow(height,2);
+
+        //계산한 값을 output에 담아준다.
+        document.getElementById("output").innerText=Math.round(BMI*100)/100;
+
+        var output =  Math.round(BMI*100)/100
+        if (output<18.5)
+        document.getElementById("comment").innerText = "저체중입니다!";
+      else   if (output>=18.5 && output<=25)
+        document.getElementById("comment").innerText = "정상입니다!";
+     else   if (output>=25 && output<=30)
+        document.getElementById("comment").innerText = "과제충입니다!";
+     else   if (output>30)
+        document.getElementById("comment").innerText = "비만입니다!";
+    }
+</script>
+ </head>
+ <body>
+    <br>
+<h1>이제 집에서 쉽고 안전하게 운동하자!</h1>
+<br>
+<br>
+<h3><p>2019년 12월, 중국 우한에서 발생한 코로나바이러스(COVID19)는 우리의 삶 깊숙한 곳까지 방해하고있습니다.</p>
+    
+<p>우리의 건강이 위협받고 있는 현재, 우리는 안전하게 강해져야 합니다.</p>
+
+<p>운동을 하러 헬스장이나 체육관을 가려면 불안하고,
+안가기는 아쉬운 운동인들을 위한 플랫폼이 탄생했습니다.</p>
+<br>
+<p>홈트레이닝 유튜브, 식단, 홈트레이닝 어플리케이션 등 다양한 컨텐츠를 접하고</p>
+
+<p>당신과 맞는 헬스 케어 플랫폼을 찾아보세요</p></h3>
+<br>
+
+
+<h1><strong>집에만 있는 당신, 건강체크 해보셨나요?</strong></h1>
+<br>
+<h2>당신의 BMI를 계산해보세요!</h1>
+<br>
+<p><strong><h3>신장을 입력하세요: </h3></strong><input type="text" id="height"/>
+    <select type="multiple" id="heightunits">
+        <option value="m">m</option>
+        <option value="cm"selected="selected">cm</option>
+    </select>
+     </p>
+<br>
+<p><strong><h3>몸무게를 입력하세요:</h3></strong><input type="text" id="weight"/>
+    <select type="multiple" id="weightunits">
+        <option value="kg" selected="selected">kg</option>
+        
+    </select>
+</p>
+<br>
+<input type="submit" value="계산하기!" onclick="computeBMI();">
+<br>
+<br>
+<h1>당신의 BMI는: <span id="output">? </span></h1>
+<h2>당신은 현재: <span id="comment"> ?</span> </h2> 
+ </body>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>계산기만들기</title>
+</head>
+<body>
+    <h3>계산기 만들기</h3>
+    <hr>
+    <table width=500 align=center>
+        <tr>
+            <td colspan=5 align=center><input type="text" id="showText"
+                style="width: 350pt; height: 20pt"></td>
+        </tr>
+        <tr>
+            <td align=center><input type=button id=4 value=BACK
+                onclick=back() style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type="button" id="clearBtn"
+                onclick=clearAll() value="CE" style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type="button" id="clearBtn"
+                onclick=clearAll() value="C" style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type="button" id="equal"
+                onclick=getResult() value="=" style="width: 80pt; height: 30pt"></td>
+        </tr>
+        
+        <tr>
+            <td align=center><input type=button id=7 value=7
+                onclick=selectedBtn(7) style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type=button id=8 value=8
+                onclick=selectedBtn(8) style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type=button id=9 value=9
+                onclick=selectedBtn(9) style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type=button id=divide value="/"
+                onclick=selectednum("/") style="width: 80pt; height: 30pt"></td>
+        </tr>
+        
+        <tr>
+            <td align=center><input type=button id=4 value=4
+                onclick=selectedBtn(4) style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type=button id=5 value=5
+                onclick=selectedBtn(5) style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type=button id=6 value=6
+                onclick=selectedBtn(6) style="width: 80pt; height: 30pt"></td>
+             <td align=center><input type=button id=multi value=*
+                onclick=selectednum("*") style="width: 80pt; height: 30pt"></td>
+        </tr>
+        <tr>
+            <td align=center><input type=button id=1 value=1
+                onclick=selectedBtn(1) style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type=button id=2 value=2
+                onclick=selectedBtn(2) style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type=button id=3 value=3
+                onclick=selectedBtn(3) style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type=button id=minus value="-"
+                onclick=selectednum("-") style="width: 80pt; height: 30pt"></td>
+            
+        </tr>
+        <tr>
+            <td align=center><input type=button id=0 value=0
+                onclick=selectedBtn(0) style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type=button id=plus value=+
+                onclick=selectednum("+") style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type=button id=dot value="NONE"
+                 style="width: 80pt; height: 30pt"></td>
+            <td align=center><input type=button id=dot value="NONE"
+                 style="width: 80pt; height: 30pt"></td>
+            
+        </tr>
+    </table>
+</body>
+</html>
+
+<script language="javascript">
+    var text1 = "";
+    var num = "";
+    var text2 = "";
+    var result = "";
+    var isDotSelected = false;
+    
+    function selectedBtn(id) {
+        if(id==".") {
+            isDotSelected = true;
+        }
+        if (num == "") { //첫번째 피 연산자 구분
+            text1 += id;
+        } else {
+            text2 += id;
+        } // end of if ~ else    
+        
+        document.getElementById('showText').value = document.getElementById('showText').value + id;
+        
+    } //end of selectedBtn function
+    
+    function selectednum(id) {
+        num = id;
+        document.getElementById('showText').value = text1 + " " + num + " "; 
+    } //end of selectednum function
+    
+    function clearAll() {
+        text1 = "";
+        text2 = "";
+        num = "";
+        result = "";
+        document.getElementById('showText').value = "";
+    }
+    function back()
+{
+    //var exp = document.getElementById("exp");
+ 
+    document.getElementById('showText').value = document.getElementById('showText').value.substring(0, document.getElementById('showText').value.length-1);
+ 
+}
+    
+    function getResult() { //=
+        result = text1 + num + text2;
+    
+        if(isDotSelected) { //실수
+            document.getElementById('showText').value = document.getElementById('showText').value + " = " + eval(result).toFixed(3);    
+        } else {
+            document.getElementById('showText').value = document.getElementById('showText').value + " = " + eval(result);
+        }
+        
+        text1 = eval(result);
+        num="";
+        text2="";
+        result = "";
+        
+        isDotSelected = false;
+        
+    } //end of getResult function
+    
+</script>
